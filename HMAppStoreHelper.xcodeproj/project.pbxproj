@@ -8,20 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		2392B830228AA5D900572E5E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2392B82F228AA5D900572E5E /* AppDelegate.swift */; };
-		2392B832228AA5D900572E5E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2392B831228AA5D900572E5E /* ViewController.swift */; };
 		2392B835228AA5D900572E5E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2392B833228AA5D900572E5E /* Main.storyboard */; };
 		2392B837228AA5DA00572E5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2392B836228AA5DA00572E5E /* Assets.xcassets */; };
 		2392B83A228AA5DA00572E5E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2392B838228AA5DA00572E5E /* LaunchScreen.storyboard */; };
+		2392B842228AA89300572E5E /* LinkListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2392B841228AA89300572E5E /* LinkListViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2392B82C228AA5D900572E5E /* HMAppStoreHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HMAppStoreHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2392B82F228AA5D900572E5E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		2392B831228AA5D900572E5E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		2392B834228AA5D900572E5E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		2392B836228AA5DA00572E5E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2392B839228AA5DA00572E5E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2392B83B228AA5DA00572E5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2392B841228AA89300572E5E /* LinkListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkListViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,7 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				2392B82F228AA5D900572E5E /* AppDelegate.swift */,
-				2392B831228AA5D900572E5E /* ViewController.swift */,
+				2392B841228AA89300572E5E /* LinkListViewController.swift */,
 				2392B833228AA5D900572E5E /* Main.storyboard */,
 				2392B836228AA5DA00572E5E /* Assets.xcassets */,
 				2392B838228AA5DA00572E5E /* LaunchScreen.storyboard */,
@@ -92,7 +92,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1020;
-				ORGANIZATIONNAME = pal;
+				ORGANIZATIONNAME = "陈晖茂";
 				TargetAttributes = {
 					2392B82B228AA5D900572E5E = {
 						CreatedOnToolsVersion = 10.2.1;
@@ -135,8 +135,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2392B832228AA5D900572E5E /* ViewController.swift in Sources */,
 				2392B830228AA5D900572E5E /* AppDelegate.swift in Sources */,
+				2392B842228AA89300572E5E /* LinkListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,14 +282,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = W3CWJY6QUS;
 				INFOPLIST_FILE = HMAppStoreHelper/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.chm.HMAppStoreHelper;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chm.AppStoreHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = iOSWildcardProfile;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -299,14 +302,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = HMAppStoreHelper/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.chm.HMAppStoreHelper;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chm.AppStoreHelper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
