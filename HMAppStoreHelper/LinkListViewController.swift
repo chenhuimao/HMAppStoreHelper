@@ -12,28 +12,17 @@ class LinkListViewController: UIViewController {
     
     private let tableView = UITableView.init()
     
-    private var appTuples: [(name: String, ID: String)] = []
+    private var appModels = AppInfo.initizlizeAppInfoModels()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.initializeData()
         self.addTableView()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.tableView.frame = self.view.bounds
-    }
-    
-    private func initializeData() {
-        self.appTuples.append((name: "丰巢管家", ID: "1030700715"))
-        self.appTuples.append((name: "丰巢", ID: "1259763050"))
-        self.appTuples.append((name: "丰巢服务站", ID: "1380039025"))
-        self.appTuples.append((name: "租我家房东", ID: "1228044790"))
-        self.appTuples.append((name: "租我家", ID: "1198862125"))
-        self.appTuples.append((name: "日签", ID: "1140397151"))
-        self.appTuples.append((name: "旅拍", ID: "1001542424"))
     }
     
     private func addTableView() {
@@ -48,12 +37,12 @@ class LinkListViewController: UIViewController {
 }
 
 //
-// MARK: - UITableViewDataSource, UITableViewDelegate
+// MARK: - UITableViewDataSource
 //
-extension LinkListViewController: UITableViewDataSource, UITableViewDelegate {
+extension LinkListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.appTuples.count
+        return self.appModels.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -63,19 +52,36 @@ extension LinkListViewController: UITableViewDataSource, UITableViewDelegate {
             cell = UITableViewCell.init(style: .default, reuseIdentifier: identifier)
         }
         if indexPath.row % 2 == 0 {
-            cell?.contentView.backgroundColor = UIColor.black.withAlphaComponent(0.1)
+            cell?.backgroundColor = UIColor.init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
         } else {
-            cell?.contentView.backgroundColor = UIColor.white
+            cell?.backgroundColor = UIColor.white
         }
-        cell?.textLabel?.text = self.appTuples[indexPath.row].name
+        
+        cell?.accessoryType = .disclosureIndicator
+        cell?.textLabel?.text = self.appModels[indexPath.row].name
         return cell!
     }
     
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            self.appModels.remove(at: indexPath.row)
+            AppInfo.save(models: self.appModels)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.tableView.perform(#selector(UITableView.reloadData), with: nil, afterDelay: 1.0)
+        }
+    }
+    
+}
+
+//
+// MARK: - UITableViewDelegate
+//
+extension LinkListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
         let itunesPrefix = "https://itunes.apple.com/app/id"
-        let itunesLink = itunesPrefix.appending(self.appTuples[indexPath.row].ID)
+        let itunesLink = itunesPrefix.appending(self.appModels[indexPath.row].ID)
         guard let itunesURL = URL.init(string: itunesLink) else {
             return
         }
@@ -88,4 +94,7 @@ extension LinkListViewController: UITableViewDataSource, UITableViewDelegate {
         UIPasteboard.general.url = itunesURL
     }
     
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
 }
