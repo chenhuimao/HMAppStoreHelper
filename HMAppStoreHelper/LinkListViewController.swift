@@ -17,6 +17,7 @@ class LinkListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Edit", style: .plain, target: self, action: #selector(clickEditBtn))
         self.addTableView()
     }
     
@@ -34,6 +35,16 @@ class LinkListViewController: UIViewController {
         self.view.addSubview(self.tableView)
     }
 
+}
+
+//
+// MARK: - Event
+//
+extension LinkListViewController {
+    @objc private func clickEditBtn() {
+        self.tableView.setEditing(!self.tableView.isEditing, animated: true)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: self.tableView.isEditing ? "Done" : "Edit", style: .plain, target: self, action: #selector(clickEditBtn))
+    }
 }
 
 //
@@ -67,8 +78,18 @@ extension LinkListViewController: UITableViewDataSource {
             self.appModels.remove(at: indexPath.row)
             AppInfo.save(models: self.appModels)
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
-            self.tableView.perform(#selector(UITableView.reloadData), with: nil, afterDelay: 1.0)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let sourceModel = self.appModels[sourceIndexPath.row]
+        self.appModels.remove(at: sourceIndexPath.row)
+        self.appModels.insert(sourceModel, at: destinationIndexPath.row)
+        AppInfo.save(models: self.appModels)
     }
     
 }
