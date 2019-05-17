@@ -19,6 +19,9 @@ class LinkListViewController: UIViewController {
 
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Edit", style: .plain, target: self, action: #selector(clickEditBtn))
         self.addTableView()
+        
+        self.requestAppInfoData()
+        self.delaySaveAppInfos()
     }
     
     override func viewDidLayoutSubviews() {
@@ -29,12 +32,18 @@ class LinkListViewController: UIViewController {
     private func addTableView() {
         self.tableView.delegate = self
         self.tableView.dataSource = self
-        self.tableView.rowHeight = 60
+        self.tableView.rowHeight = AppInfoCell.height
         self.tableView.separatorStyle = .none
         self.tableView.tableFooterView = UIView()
         self.view.addSubview(self.tableView)
     }
 
+    private func delaySaveAppInfos() {
+        // 可能没有进行编辑操作，15秒后保存一次S
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 15, execute: {
+            AppInfo.save(models: self.appModels)
+        })
+    }
 }
 
 //
@@ -44,6 +53,43 @@ extension LinkListViewController {
     @objc private func clickEditBtn() {
         self.tableView.setEditing(!self.tableView.isEditing, animated: true)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: self.tableView.isEditing ? "Done" : "Edit", style: .plain, target: self, action: #selector(clickEditBtn))
+    }
+    
+    @objc private func requestAppInfoData() {
+        for (i, appInfo) in self.appModels.enumerated() {
+            guard let url = URL.init(string: "https://itunes.apple.com/cn/lookup?id=" + appInfo.ID) else {
+                continue
+            }
+            
+            var request = URLRequest.init(url: url)
+            request.httpMethod = "POST"
+            URLSession.shared.dataTask(with: request) { [weak self] (data, _, err) in
+                if let error = err {
+                    print(error.localizedDescription)
+                    return
+                }
+                
+                guard let data = data else {
+                    return
+                }
+                
+                guard let jsonObject = try? JSONSerialization.jsonObject(with: data), let jsonDic = jsonObject as? [String: Any] else {
+                    return
+                }
+                
+                guard let appInfoDic = (jsonDic["results"] as? [[String: Any]])?.first else {
+                    return
+                }
+                
+                self?.appModels[i].setup(appInfoDic: appInfoDic)
+                
+                DispatchQueue.main.async(execute: {
+                    self?.tableView.reloadRows(at: [IndexPath.init(row: i, section: 0)], with: .automatic)
+                })
+                
+            }.resume()
+        }
+        
     }
 }
 
@@ -57,20 +103,15 @@ extension LinkListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let identifier = "LinkListCell";
-        var cell = tableView.dequeueReusableCell(withIdentifier: identifier)
-        if cell == nil {
-            cell = UITableViewCell.init(style: .default, reuseIdentifier: identifier)
-        }
+        let cell = AppInfoCell.makeOrReusedCell(inTableView: tableView)
         if indexPath.row % 2 == 0 {
-            cell?.backgroundColor = UIColor.init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
+            cell.backgroundColor = UIColor.init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
         } else {
-            cell?.backgroundColor = UIColor.white
+            cell.backgroundColor = UIColor.white
         }
         
-        cell?.accessoryType = .disclosureIndicator
-        cell?.textLabel?.text = self.appModels[indexPath.row].name
-        return cell!
+        cell.setup(appInfo: self.appModels[indexPath.row])
+        return cell
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

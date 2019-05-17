@@ -14,7 +14,25 @@ struct AppInfo: Codable {
 
     let name: String
     let ID: String
+    var imageURL = ""
+    var version = ""
+    var releaseDate = ""
     
+    init(name: String, ID: String) {
+        self.name = name
+        self.ID = ID
+    }
+    
+    /// 根据dic设置属性
+    mutating func setup(appInfoDic: [String: Any]) {
+        self.imageURL = (appInfoDic["artworkUrl100"] as? String) ?? ""
+        self.version = (appInfoDic["version"] as? String) ?? ""
+        
+        let releaseDate = (appInfoDic["currentVersionReleaseDate"] as? String) ?? ""
+        self.releaseDate = String(releaseDate.prefix(10))
+    }
+    
+    /// 初始化
     static func initizlizeAppInfoModels() -> [AppInfo] {
         var appInfos: [AppInfo]
         let fileURL = URL.init(fileURLWithPath: kFilePath)
@@ -39,6 +57,7 @@ struct AppInfo: Codable {
         return appInfos
     }
     
+    /// 保存到documentDirectory
     static func save(models: [AppInfo]) {
         let fileURL = URL.init(fileURLWithPath: kFilePath)
 
