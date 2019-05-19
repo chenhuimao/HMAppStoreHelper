@@ -10,7 +10,7 @@ import Foundation
 
 private let kFilePath = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first ?? NSHomeDirectory()) + "/AppInfoModels"
 
-struct AppInfo: Codable {
+class AppInfo: Codable {
 
     let name: String
     let ID: String
@@ -18,15 +18,21 @@ struct AppInfo: Codable {
     var version = ""
     var releaseDate = ""
     
+    /// 是否已更新版本
+    var isUpdated = false
+    
     init(name: String, ID: String) {
         self.name = name
         self.ID = ID
     }
     
     /// 根据dic设置属性
-    mutating func setup(appInfoDic: [String: Any]) {
+    func setup(appInfoDic: [String: Any]) {
         self.imageURL = (appInfoDic["artworkUrl100"] as? String) ?? ""
-        self.version = (appInfoDic["version"] as? String) ?? ""
+        
+        let version = (appInfoDic["version"] as? String) ?? ""
+        self.isUpdated = (self.version.count > 0 && self.version != version)
+        self.version = version
         
         let releaseDate = (appInfoDic["currentVersionReleaseDate"] as? String) ?? ""
         self.releaseDate = String(releaseDate.prefix(10))
@@ -52,6 +58,11 @@ struct AppInfo: Codable {
             ]
             
             self.save(models: appInfos)
+        }
+        
+        //  重置部分属性
+        for appInfo in appInfos {
+            appInfo.isUpdated = false
         }
         
         return appInfos

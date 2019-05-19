@@ -25,11 +25,16 @@ extension AppInfoCell {
     
     func setup(appInfo: AppInfo) {
         self.appInfo = appInfo
-        
-//        self.icon.image
+
+        self.requestIconImage()
         self.nameLab.text = appInfo.name
         self.versionLab.text = appInfo.version
         self.dateLab.text = appInfo.releaseDate
+        
+        if appInfo.isUpdated {
+            self.versionLab.textColor = UIColor.red
+            self.dateLab.textColor = UIColor.red
+        }
         
         self.setNeedsLayout()
     }
@@ -39,7 +44,12 @@ class AppInfoCell: UITableViewCell {
     
     private var appInfo: AppInfo?
     
-    private let icon = UIImageView()
+    private let icon: UIImageView = {
+        let icon = UIImageView()
+        icon.layer.cornerRadius = 6
+        icon.layer.masksToBounds = true
+        return icon
+    }()
     
     private let nameLab: UILabel = {
         let lab = UILabel()
@@ -91,4 +101,20 @@ class AppInfoCell: UITableViewCell {
 
     }
     
+    private func requestIconImage() {
+        //  还需要完善cancel机制
+        self.icon.image = nil
+        DispatchQueue.global().async {
+            guard let url = URL.init(string: self.appInfo?.imageURL ?? "") else {
+                return
+            }
+            guard let imageData = try? Data.init(contentsOf: url) else {
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self.icon.image = UIImage.init(data: imageData)
+            }
+        }
+    }
 }
