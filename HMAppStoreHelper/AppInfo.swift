@@ -17,6 +17,10 @@ class AppInfo: Codable {
     var imageURL = ""
     var version = ""
     var releaseDate = ""
+    /// 当前版本评分
+    var averageRating = 0.0
+    /// 当前版本已评分的用户数量
+    var userRatingCount = 0
     
     /// 是否已更新版本
     var isUpdated = false
@@ -36,6 +40,9 @@ class AppInfo: Codable {
         
         let releaseDate = (appInfoDic["currentVersionReleaseDate"] as? String) ?? ""
         self.releaseDate = String(releaseDate.prefix(10))
+        
+        self.averageRating = (appInfoDic["averageUserRatingForCurrentVersion"] as? Double) ?? 0.0
+        self.userRatingCount = (appInfoDic["userRatingCountForCurrentVersion"] as? Int) ?? 0
     }
     
     /// 初始化
