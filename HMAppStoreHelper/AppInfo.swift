@@ -12,8 +12,8 @@ private let kFilePath = (NSSearchPathForDirectoriesInDomains(.documentDirectory,
 
 class AppInfo: Codable {
 
-    let name: String
     let ID: String
+    var name = ""
     var imageURL = ""
     var version = ""
     var releaseDate = ""
@@ -25,13 +25,14 @@ class AppInfo: Codable {
     /// 是否已更新版本
     var isUpdated = false
     
-    init(name: String, ID: String) {
-        self.name = name
+    init(ID: String) {
         self.ID = ID
     }
     
     /// 根据dic设置属性
     func setup(appInfoDic: [String: Any]) {
+        self.name = (appInfoDic["trackName"] as? String) ?? ""
+        
         self.imageURL = (appInfoDic["artworkUrl100"] as? String) ?? ""
         
         let version = (appInfoDic["version"] as? String) ?? ""
@@ -55,13 +56,13 @@ class AppInfo: Codable {
 
         } else {
             appInfos = [
-                AppInfo.init(name: "丰巢管家", ID: "1030700715"),
-                AppInfo.init(name: "丰巢", ID: "1259763050"),
-                AppInfo.init(name: "丰巢服务站", ID: "1380039025"),
-                AppInfo.init(name: "租我家房东", ID: "1228044790"),
-                AppInfo.init(name: "租我家", ID: "1198862125"),
-                AppInfo.init(name: "日签", ID: "1140397151"),
-                AppInfo.init(name: "旅拍", ID: "1001542424"),
+                AppInfo.init(ID: "1030700715"),     //  丰巢管家
+                AppInfo.init(ID: "1259763050"),     //  丰巢
+                AppInfo.init(ID: "1380039025"),     //  丰巢服务站
+                AppInfo.init(ID: "1228044790"),     //  租我家房东
+                AppInfo.init(ID: "1198862125"),     //  租我家
+                AppInfo.init(ID: "1140397151"),     //  日签
+                AppInfo.init(ID: "1001542424"),     //  旅拍
             ]
             
             self.save(models: appInfos)

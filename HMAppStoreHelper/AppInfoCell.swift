@@ -26,6 +26,8 @@ extension AppInfoCell {
     func setup(appInfo: AppInfo) {
         self.appInfo = appInfo
 
+        self.contentView.isHidden = appInfo.name.count == 0
+        
         self.requestIconImage()
         self.nameLab.text = appInfo.name
         self.versionLab.text = appInfo.version

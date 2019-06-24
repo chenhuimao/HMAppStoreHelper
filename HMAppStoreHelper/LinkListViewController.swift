@@ -63,8 +63,7 @@ class LinkListViewController: UIViewController {
                     return
                 }
                 
-                let appName = (appInfoDic["trackName"] as? String) ?? ""
-                let newAppInfo = AppInfo.init(name: appName, ID: ID)
+                let newAppInfo = AppInfo.init(ID: ID)
                 newAppInfo.setup(appInfoDic: appInfoDic)
                 self.appModels.append(newAppInfo)
                 AppInfo.save(models: self.appModels)
