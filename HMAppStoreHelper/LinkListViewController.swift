@@ -38,7 +38,7 @@ class LinkListViewController: UIViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.rowHeight = AppInfoCell.height
-        self.tableView.separatorStyle = .none
+        self.tableView.separatorStyle = .singleLine
         self.tableView.tableFooterView = UIView()
         self.view.addSubview(self.tableView)
     }
@@ -143,12 +143,6 @@ extension LinkListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = AppInfoCell.makeOrReusedCell(inTableView: tableView)
-        if indexPath.row % 2 == 0 {
-            cell.backgroundColor = UIColor.init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
-        } else {
-            cell.backgroundColor = UIColor.white
-        }
-        
         cell.setup(appInfo: self.appModels[indexPath.row])
         return cell
     }

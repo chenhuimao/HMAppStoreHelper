@@ -49,6 +49,7 @@ class AppInfoCell: UITableViewCell {
     
     private let icon: UIImageView = {
         let icon = UIImageView()
+        icon.backgroundColor = UIColor.init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
         icon.layer.cornerRadius = 16
         icon.layer.masksToBounds = true
         icon.layer.borderColor = UIColor.init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1).cgColor
