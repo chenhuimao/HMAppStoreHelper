@@ -32,7 +32,7 @@ class ShareViewController: SLComposeServiceViewController {
             let typeIdentifier = kUTTypeURL as String
             for provider in itemProviders where provider.hasItemConformingToTypeIdentifier(typeIdentifier) {
                 provider.loadItem(forTypeIdentifier: typeIdentifier, options: nil) { (url, error) in
-                    if let url = url as? NSURL, let URLScheme = self.getURLSchemeByLink(url) {
+                    if let url = url as? URL, let URLScheme = self.getURLSchemeByLink(url) {
                         self.openURL(URLScheme)
                     }
                 }
@@ -61,13 +61,13 @@ class ShareViewController: SLComposeServiceViewController {
         }
     }
 
-    private func getURLSchemeByLink(_ url: NSURL) -> URL? {
+    private func getURLSchemeByLink(_ url: URL) -> URL? {
         guard url.host?.contains("apple.com") ?? false else {
             return nil
         }
         
         let appStoreHelperSchems = "HMAppStoreHelper://"
-        for pathComponent in url.pathComponents ?? [] {
+        for pathComponent in url.pathComponents {
             if pathComponent.hasPrefix("id") {
                 return URL.init(string: appStoreHelperSchems + pathComponent)
             }

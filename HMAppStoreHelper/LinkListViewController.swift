@@ -8,6 +8,10 @@
 
 import UIKit
 
+extension NSNotification.Name {
+    static let obtainNewAppID = NSNotification.Name.init("obtainNewAppID")
+}
+
 class LinkListViewController: UIViewController {
     
     private let tableView = UITableView.init()
@@ -20,8 +24,9 @@ class LinkListViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Edit", style: .plain, target: self, action: #selector(clickEditBtn))
         self.addTableView()
         
-        self.requestAppInfoData()
+        self.requestAllAppInfo()
         self.delaySaveAppInfos()
+        self.addNotification()
     }
     
     override func viewDidLayoutSubviews() {
@@ -39,10 +44,37 @@ class LinkListViewController: UIViewController {
     }
 
     private func delaySaveAppInfos() {
-        // 可能没有进行编辑操作，15秒后保存一次S
+        // 可能没有进行编辑操作，15秒后保存一次
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 15, execute: {
             AppInfo.save(models: self.appModels)
         })
+    }
+    
+    private func addNotification() {
+        NotificationCenter.default.addObserver(forName: .obtainNewAppID, object: nil, queue: nil) { (notification) in
+            print(notification)
+            
+            guard let userInfo = notification.userInfo as? [String: String], let ID = userInfo["appID"] else {
+                return
+            }
+            
+            self.requestAppInfoWith(ID: ID, success: { [weak self] (appInfoDic) in
+                guard let `self` = self else {
+                    return
+                }
+                
+                let appName = (appInfoDic["trackName"] as? String) ?? ""
+                let newAppInfo = AppInfo.init(name: appName, ID: ID)
+                newAppInfo.setup(appInfoDic: appInfoDic)
+                self.appModels.append(newAppInfo)
+                AppInfo.save(models: self.appModels)
+                
+                DispatchQueue.main.async(execute: {
+                    self.tableView.reloadData()
+                })
+            })
+            
+        }
     }
 }
 
@@ -55,40 +87,48 @@ extension LinkListViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: self.tableView.isEditing ? "Done" : "Edit", style: .plain, target: self, action: #selector(clickEditBtn))
     }
     
-    @objc private func requestAppInfoData() {
+    @objc private func requestAllAppInfo() {
         for (i, appInfo) in self.appModels.enumerated() {
-            guard let url = URL.init(string: "https://itunes.apple.com/cn/lookup?id=" + appInfo.ID) else {
-                continue
-            }
             
-            var request = URLRequest.init(url: url)
-            request.httpMethod = "POST"
-            URLSession.shared.dataTask(with: request) { [weak self] (data, _, err) in
-                if let error = err {
-                    print(error.localizedDescription)
-                    return
-                }
-                
-                guard let data = data else {
-                    return
-                }
-                
-                guard let jsonObject = try? JSONSerialization.jsonObject(with: data), let jsonDic = jsonObject as? [String: Any] else {
-                    return
-                }
-                
-                guard let appInfoDic = (jsonDic["results"] as? [[String: Any]])?.first else {
-                    return
-                }
-                
+            self.requestAppInfoWith(ID: appInfo.ID) { [weak self] (appInfoDic) in
                 self?.appModels[i].setup(appInfoDic: appInfoDic)
                 
                 DispatchQueue.main.async(execute: {
                     self?.tableView.reloadRows(at: [IndexPath.init(row: i, section: 0)], with: .automatic)
                 })
-                
-            }.resume()
+            }
         }
+        
+    }
+    
+    private func requestAppInfoWith(ID: String, success: @escaping (_ appInfoDic: [String: Any]) -> Void) {
+        guard let url = URL.init(string: "https://itunes.apple.com/cn/lookup?id=" + ID) else {
+            return
+        }
+        
+        var request = URLRequest.init(url: url)
+        request.httpMethod = "POST"
+        URLSession.shared.dataTask(with: request) { (data, _, err) in
+            if let error = err {
+                print(error.localizedDescription)
+                return
+            }
+            
+            guard let data = data else {
+                return
+            }
+            
+            guard let jsonObject = try? JSONSerialization.jsonObject(with: data), let jsonDic = jsonObject as? [String: Any] else {
+                return
+            }
+            
+            guard let appInfoDic = (jsonDic["results"] as? [[String: Any]])?.first else {
+                return
+            }
+            
+            success(appInfoDic)
+            
+        }.resume()
         
     }
 }

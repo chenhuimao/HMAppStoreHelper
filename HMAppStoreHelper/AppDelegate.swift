@@ -18,7 +18,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        print(url)
+//        print(url)    HMAppStoreHelper://id382201985
+        
+        if let host = url.host, host.contains("id") {
+            let appID = host.replacingOccurrences(of: "id", with: "")
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) { //  需要等待LinkListVC监听之后
+                NotificationCenter.default.post(name: .obtainNewAppID, object: nil, userInfo: ["appID": appID])
+            }
+        }
+        
         return true
     }
 
