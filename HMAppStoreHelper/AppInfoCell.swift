@@ -20,7 +20,7 @@ extension AppInfoCell {
     }
     
     class var height: CGFloat {
-        return 50
+        return 84
     }
     
     func setup(appInfo: AppInfo) {
@@ -49,8 +49,10 @@ class AppInfoCell: UITableViewCell {
     
     private let icon: UIImageView = {
         let icon = UIImageView()
-        icon.layer.cornerRadius = 6
+        icon.layer.cornerRadius = 16
         icon.layer.masksToBounds = true
+        icon.layer.borderColor = UIColor.init(red: 0.9, green: 0.9, blue: 0.9, alpha: 1).cgColor
+        icon.layer.borderWidth = 1 / UIScreen.main.scale
         return icon
     }()
     
@@ -104,14 +106,17 @@ class AppInfoCell: UITableViewCell {
         
         let marginX: CGFloat = 10
         let marginY: CGFloat = 5
-        let iconSidelength: CGFloat = 30
+        let iconSidelength: CGFloat = 64
         self.icon.frame = CGRect.init(x: marginX, y: (self.contentView.bounds.height - iconSidelength) / 2, width: iconSidelength, height: iconSidelength)
-        self.nameLab.frame = CGRect.init(x: self.icon.frame.maxX + marginX, y: 0, width: self.nameLab.intrinsicContentSize.width, height: self.contentView.bounds.height)
         
-        self.versionLab.frame = CGRect.init(x: self.contentView.bounds.width - marginX - self.versionLab.intrinsicContentSize.width, y: marginY, width: self.versionLab.intrinsicContentSize.width, height: self.versionLab.intrinsicContentSize.height)
-        self.dateLab.frame = CGRect.init(x: self.contentView.bounds.width - marginX - self.dateLab.intrinsicContentSize.width, y: self.contentView.bounds.height - marginY - self.dateLab.intrinsicContentSize.height, width: self.dateLab.intrinsicContentSize.width, height: self.dateLab.intrinsicContentSize.height)
-        self.ratingLab.frame = CGRect.init(x: self.dateLab.frame.minX - 10 - self.ratingLab.intrinsicContentSize.width, y: self.dateLab.frame.minY, width: self.ratingLab.intrinsicContentSize.width, height: self.ratingLab.intrinsicContentSize.height)
-
+        let nameLabX = self.icon.frame.maxX + marginX
+        let nameLabWidth = self.contentView.bounds.width - nameLabX - marginX
+        self.nameLab.frame = CGRect.init(x: nameLabX, y: 10, width: nameLabWidth, height: self.nameLab.intrinsicContentSize.height)
+        
+        self.versionLab.frame = CGRect.init(x: self.nameLab.frame.minX, y: self.nameLab.frame.maxY + marginY, width: self.versionLab.intrinsicContentSize.width, height: self.versionLab.intrinsicContentSize.height)
+        self.dateLab.frame = CGRect.init(x: self.versionLab.frame.maxX + marginX, y: self.versionLab.frame.minY, width: self.dateLab.intrinsicContentSize.width, height: self.dateLab.intrinsicContentSize.height)
+        
+        self.ratingLab.frame = CGRect.init(x: self.versionLab.frame.minX, y: self.versionLab.frame.maxY + marginY, width: self.ratingLab.intrinsicContentSize.width, height: self.ratingLab.intrinsicContentSize.height)
     }
     
     private func requestIconImage() {
