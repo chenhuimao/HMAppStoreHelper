@@ -21,9 +21,13 @@ class AppInfo: Codable {
     var averageRating = 0.0
     /// 当前版本已评分的用户数量
     var userRatingCount = 0
+    /// 价格
+    var price = 0.00
     
-    /// 是否已更新版本
+    /// 是否更新了版本
     var isUpdated = false
+    /// 是否更新了价格
+    var isUpdatePrice = false
     
     init(ID: String) {
         self.ID = ID
@@ -44,6 +48,10 @@ class AppInfo: Codable {
         
         self.averageRating = (appInfoDic["averageUserRatingForCurrentVersion"] as? Double) ?? 0.0
         self.userRatingCount = (appInfoDic["userRatingCountForCurrentVersion"] as? Int) ?? 0
+        
+        let price = (appInfoDic["price"] as? Double) ?? 0.00
+        self.isUpdatePrice = (self.price > 0 && self.price != price)
+        self.price = price
     }
     
     /// 初始化
@@ -71,6 +79,7 @@ class AppInfo: Codable {
         //  重置部分属性
         for appInfo in appInfos {
             appInfo.isUpdated = false
+            appInfo.isUpdatePrice = false
         }
         
         return appInfos

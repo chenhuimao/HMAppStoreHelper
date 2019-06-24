@@ -34,10 +34,18 @@ extension AppInfoCell {
         self.dateLab.text = appInfo.releaseDate
         self.ratingLab.text = String.init(format: "⭐️%.1lf(%zd)", appInfo.averageRating, appInfo.userRatingCount)
         
+        self.priceLab.text = String.init(format: "¥%.2lf", appInfo.price)
+        self.priceLab.isHidden = appInfo.price <= 0
+        
         if appInfo.isUpdated {
-            self.versionLab.textColor = UIColor.red
-            self.dateLab.textColor = UIColor.red
+            self.versionLab.textColor = .red
+            self.dateLab.textColor = .red
+        } else {
+            self.versionLab.textColor = .init(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
+            self.dateLab.textColor = .init(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
         }
+        
+        self.priceLab.textColor = appInfo.isUpdatePrice ? .red : .init(red: 0.04, green: 0.37, blue: 1.0, alpha: 1)
         
         self.setNeedsLayout()
     }
@@ -66,14 +74,12 @@ class AppInfoCell: UITableViewCell {
     
     private let versionLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = UIColor.init(red: 0.2, green: 0.2, blue: 0.2, alpha: 1)
         lab.font = UIFont.systemFont(ofSize: 14)
         return lab
     }()
     
     private let dateLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = UIColor.init(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
         lab.font = UIFont.systemFont(ofSize: 14)
         return lab
     }()
@@ -83,6 +89,15 @@ class AppInfoCell: UITableViewCell {
         let lab = UILabel()
         lab.textColor = UIColor.init(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
         lab.font = UIFont.systemFont(ofSize: 14)
+        return lab
+    }()
+    
+    private let priceLab: UILabel = {
+        let lab = UILabel()
+        lab.backgroundColor = UIColor.init(red: 0.93, green: 0.93, blue: 0.96, alpha: 1)
+        lab.font = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        lab.textAlignment = .center
+        lab.layer.masksToBounds = true
         return lab
     }()
 
@@ -96,6 +111,7 @@ class AppInfoCell: UITableViewCell {
         self.contentView.addSubview(self.versionLab)
         self.contentView.addSubview(self.dateLab)
         self.contentView.addSubview(self.ratingLab)
+        self.contentView.addSubview(self.priceLab)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -118,6 +134,11 @@ class AppInfoCell: UITableViewCell {
         self.dateLab.frame = CGRect.init(x: self.versionLab.frame.maxX + marginX, y: self.versionLab.frame.minY, width: self.dateLab.intrinsicContentSize.width, height: self.dateLab.intrinsicContentSize.height)
         
         self.ratingLab.frame = CGRect.init(x: self.versionLab.frame.minX, y: self.versionLab.frame.maxY + marginY, width: self.ratingLab.intrinsicContentSize.width, height: self.ratingLab.intrinsicContentSize.height)
+        
+        let priceLabHeight: CGFloat = 26
+        let priceLabWidth: CGFloat = self.priceLab.intrinsicContentSize.width + 24
+        self.priceLab.layer.cornerRadius = priceLabHeight / 2
+        self.priceLab.frame = CGRect.init(x: self.contentView.bounds.width - marginX - priceLabWidth, y: (self.contentView.bounds.height - priceLabHeight) / 2, width: priceLabWidth, height: priceLabHeight)
     }
     
     private func requestIconImage() {
