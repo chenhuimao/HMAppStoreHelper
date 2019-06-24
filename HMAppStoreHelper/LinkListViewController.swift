@@ -17,6 +17,12 @@ class LinkListViewController: UIViewController {
     private let tableView = UITableView.init()
     
     private var appModels = AppInfo.initizlizeAppInfoModels()
+    
+    private var observer: NSObjectProtocol?
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self.observer as Any)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,10 +57,17 @@ class LinkListViewController: UIViewController {
     }
     
     private func addNotification() {
-        NotificationCenter.default.addObserver(forName: .obtainNewAppID, object: nil, queue: nil) { (notification) in
-            print(notification)
+        self.observer = NotificationCenter.default.addObserver(forName: .obtainNewAppID, object: nil, queue: nil) { [weak self] (notification) in
+            
+            guard let `self` = self else {
+                return
+            }
             
             guard let userInfo = notification.userInfo as? [String: String], let ID = userInfo["appID"] else {
+                return
+            }
+            
+            if AppInfo.isExist(ID: ID, models: self.appModels) {
                 return
             }
             
