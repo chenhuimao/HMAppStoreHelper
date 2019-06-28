@@ -31,7 +31,6 @@ class LinkListViewController: UIViewController {
         self.addTableView()
         
         self.requestAllAppInfo()
-        self.delaySaveAppInfos()
         self.addNotification()
     }
     
@@ -47,13 +46,6 @@ class LinkListViewController: UIViewController {
         self.tableView.separatorStyle = .singleLine
         self.tableView.tableFooterView = UIView()
         self.view.addSubview(self.tableView)
-    }
-
-    private func delaySaveAppInfos() {
-        // 可能没有进行编辑操作，15秒后保存一次
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 15, execute: {
-            AppInfo.save(models: self.appModels)
-        })
     }
     
     private func addNotification() {
@@ -79,7 +71,7 @@ class LinkListViewController: UIViewController {
                 let newAppInfo = AppInfo.init(ID: ID)
                 newAppInfo.setup(appInfoDic: appInfoDic)
                 self.appModels.append(newAppInfo)
-                AppInfo.save(models: self.appModels)
+                self.saveAppInfoModel()
                 
                 DispatchQueue.main.async(execute: {
                     self.tableView.reloadData()
@@ -103,10 +95,18 @@ extension LinkListViewController {
         for (i, appInfo) in self.appModels.enumerated() {
             
             self.requestAppInfoWith(ID: appInfo.ID) { [weak self] (appInfoDic) in
-                self?.appModels[i].setup(appInfoDic: appInfoDic)
+                
+                guard let `self` = self else {
+                    return
+                }
+                
+                self.appModels[i].setup(appInfoDic: appInfoDic)
                 
                 DispatchQueue.main.async(execute: {
-                    self?.tableView.reloadRows(at: [IndexPath.init(row: i, section: 0)], with: .automatic)
+                    self.tableView.reloadRows(at: [IndexPath.init(row: i, section: 0)], with: .automatic)
+                    
+                    self.classForCoder.cancelPreviousPerformRequests(withTarget: self, selector: #selector(self.saveAppInfoModel), object: nil)
+                    self.perform(#selector(self.saveAppInfoModel), with: nil, afterDelay: 3)
                 })
             }
         }
@@ -163,7 +163,7 @@ extension LinkListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             self.appModels.remove(at: indexPath.row)
-            AppInfo.save(models: self.appModels)
+            self.saveAppInfoModel()
             self.tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }
@@ -176,7 +176,7 @@ extension LinkListViewController: UITableViewDataSource {
         let sourceModel = self.appModels[sourceIndexPath.row]
         self.appModels.remove(at: sourceIndexPath.row)
         self.appModels.insert(sourceModel, at: destinationIndexPath.row)
-        AppInfo.save(models: self.appModels)
+        self.saveAppInfoModel()
     }
     
 }
@@ -204,5 +204,15 @@ extension LinkListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
+    }
+}
+
+//
+// MARK: - Helper
+//
+extension LinkListViewController {
+
+    @objc private func saveAppInfoModel() {
+        AppInfo.save(models: self.appModels)
     }
 }
