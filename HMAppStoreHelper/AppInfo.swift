@@ -10,6 +10,9 @@ import Foundation
 
 private let kFilePath = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first ?? NSHomeDirectory()) + "/AppInfoModels"
 
+private let kIDFilePath = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first ?? NSHomeDirectory()) + "/AppInfoIDs"
+
+/// APP信息模型
 class AppInfo: Codable {
 
     let ID: String
@@ -58,10 +61,17 @@ class AppInfo: Codable {
     static func initizlizeAppInfoModels() -> [AppInfo] {
         var appInfos: [AppInfo]
         let fileURL = URL.init(fileURLWithPath: kFilePath)
+        let IDFileURL = URL.init(fileURLWithPath: kIDFilePath)
         
         if let modelData = try? Data.init(contentsOf: fileURL), let models = try? JSONDecoder().decode([AppInfo].self, from: modelData) {
             appInfos = models
 
+        } else if let IDData = try? Data.init(contentsOf: IDFileURL), let IDs = try? JSONDecoder().decode([String].self, from: IDData) {
+            appInfos = [AppInfo]()
+            for ID in IDs {
+                appInfos.append(AppInfo.init(ID: ID))
+            }
+            
         } else {
             appInfos = [
                 AppInfo.init(ID: "1030700715"),     //  丰巢管家
@@ -73,7 +83,6 @@ class AppInfo: Codable {
                 AppInfo.init(ID: "1001542424"),     //  旅拍
             ]
             
-            self.save(models: appInfos)
         }
         
         //  重置部分属性
@@ -87,10 +96,19 @@ class AppInfo: Codable {
     
     /// 保存到documentDirectory
     static func save(models: [AppInfo]) {
+        //  保存模型
         let fileURL = URL.init(fileURLWithPath: kFilePath)
 
         if let infoData = try? JSONEncoder().encode(models) {
             try? infoData.write(to: fileURL, options: .atomic)
+        }
+        
+        //  保存ID
+        let IDs = models.map { $0.ID }
+        let idFileURL = URL.init(fileURLWithPath: kIDFilePath)
+        
+        if let IDData = try? JSONEncoder().encode(IDs) {
+            try? IDData.write(to: idFileURL, options: .atomic)
         }
     }
     
