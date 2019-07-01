@@ -1,0 +1,6 @@
+framework module Pods_HMAppStoreHelper {
+  umbrella header "Pods-HMAppStoreHelper-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 extension AppInfoCell {
     class func makeOrReusedCell(inTableView tableView: UITableView) -> AppInfoCell {
@@ -142,19 +143,7 @@ class AppInfoCell: UITableViewCell {
     }
     
     private func requestIconImage() {
-        //  还需要完善cancel机制
-        self.icon.image = nil
-        DispatchQueue.global().async {
-            guard let url = URL.init(string: self.appInfo?.imageURL ?? "") else {
-                return
-            }
-            guard let imageData = try? Data.init(contentsOf: url) else {
-                return
-            }
-            
-            DispatchQueue.main.async {
-                self.icon.image = UIImage.init(data: imageData)
-            }
-        }
+        self.icon.kf.cancelDownloadTask()
+        self.icon.kf.setImage(with: URL.init(string: self.appInfo?.imageURL ?? ""), placeholder: nil)
     }
 }
