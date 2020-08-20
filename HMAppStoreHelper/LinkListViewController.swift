@@ -59,7 +59,9 @@ class LinkListViewController: UIViewController {
                 return
             }
             
-            if AppInfo.isExist(ID: ID, models: self.appModels) {
+            let isExistTuple = AppInfo.isExist(ID: ID, models: self.appModels)
+            if isExistTuple.isExist {
+                self.tableView.scrollToRow(at: IndexPath(row: isExistTuple.index, section: 0), at: .middle, animated: true)
                 return
             }
             
@@ -75,7 +77,7 @@ class LinkListViewController: UIViewController {
                 
                 DispatchQueue.main.async(execute: {
                     self.tableView.reloadData()
-                    self.tableView.scrollToRow(at: IndexPath.init(row: self.appModels.count - 1, section: 0), at: .middle, animated: true)
+                    self.tableView.scrollToRow(at: IndexPath(row: self.appModels.count - 1, section: 0), at: .middle, animated: true)
                 })
             })
             

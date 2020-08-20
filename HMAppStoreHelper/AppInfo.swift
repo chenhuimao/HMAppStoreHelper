@@ -113,10 +113,12 @@ class AppInfo: Codable {
     }
     
     /// models数组是否已经存在某个ID
-    static func isExist(ID: String, models: [AppInfo]) -> Bool {
-        for model in models where model.ID == ID {
-            return true
+    static func isExist(ID: String, models: [AppInfo]) -> (isExist: Bool, index: Int) {
+        for (i, model) in models.enumerated() {
+            if model.ID == ID {
+                return (true, i)
+            }
         }
-        return false
+        return (false, -1)
     }
 }
