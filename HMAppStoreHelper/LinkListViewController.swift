@@ -75,6 +75,7 @@ class LinkListViewController: UIViewController {
                 
                 DispatchQueue.main.async(execute: {
                     self.tableView.reloadData()
+                    self.tableView.scrollToRow(at: IndexPath.init(row: self.appModels.count - 1, section: 0), at: .middle, animated: true)
                 })
             })
             

@@ -1,16 +1,18 @@
 PODS:
-  - Kingfisher (5.6.0)
+  - Kingfisher (5.15.0):
+    - Kingfisher/Core (= 5.15.0)
+  - Kingfisher/Core (5.15.0)
 
 DEPENDENCIES:
   - Kingfisher
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - Kingfisher
 
 SPEC CHECKSUMS:
-  Kingfisher: 1a50df6880a60bae26f3e21a0df3d17b892f5e0b
+  Kingfisher: 1acb67597a520c2d0310677e66d6e0af455ef757
 
-PODFILE CHECKSUM: 47b0574bc74225518256af9dccf56d9b24453068
+PODFILE CHECKSUM: d1f503e62781eaef3332643edaa3436c261e0259
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.9.3
