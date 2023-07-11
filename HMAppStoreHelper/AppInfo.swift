@@ -74,13 +74,10 @@ class AppInfo: Codable {
             
         } else {
             appInfos = [
+                AppInfo.init(ID: "444934666"),     //  QQ
+                AppInfo.init(ID: "414478124"),     //  微信
                 AppInfo.init(ID: "1030700715"),     //  丰巢管家
                 AppInfo.init(ID: "1259763050"),     //  丰巢
-                AppInfo.init(ID: "1380039025"),     //  丰巢服务站
-                AppInfo.init(ID: "1228044790"),     //  租我家房东
-                AppInfo.init(ID: "1198862125"),     //  租我家
-                AppInfo.init(ID: "1140397151"),     //  日签
-                AppInfo.init(ID: "1001542424"),     //  旅拍
             ]
             
         }

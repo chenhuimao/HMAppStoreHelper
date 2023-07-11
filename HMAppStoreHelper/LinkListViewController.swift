@@ -192,11 +192,13 @@ extension LinkListViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         
         let itunesPrefix = "https://itunes.apple.com/app/id"
-        let itunesLink = itunesPrefix.appending(self.appModels[indexPath.row].ID)
+        let appModel = self.appModels[indexPath.row]
+        let itunesLink = itunesPrefix.appending(appModel.ID)
         guard let itunesURL = URL.init(string: itunesLink) else {
             return
         }
         
+        print("App Name:\(appModel.name), App id:\(appModel.ID).")
         //  跳转
         UIApplication.shared.open(itunesURL, options: [:], completionHandler: nil)
         
