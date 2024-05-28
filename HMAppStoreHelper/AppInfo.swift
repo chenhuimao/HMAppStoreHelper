@@ -92,8 +92,6 @@ class AppInfo: Codable {
             appInfos = [
                 AppInfo.init(ID: "444934666"),     //  QQ
                 AppInfo.init(ID: "414478124"),     //  微信
-                AppInfo.init(ID: "1030700715"),     //  丰巢管家
-                AppInfo.init(ID: "1259763050"),     //  丰巢
             ]
             
         }
