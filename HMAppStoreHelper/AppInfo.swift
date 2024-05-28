@@ -42,10 +42,6 @@ class AppInfo: Codable {
         
         self.imageURL = (appInfoDic["artworkUrl100"] as? String) ?? ""
         
-        let version = (appInfoDic["version"] as? String) ?? ""
-        self.isUpdated = (self.version.count > 0 && self.version != version)
-        self.version = version
-        
         let releaseDate = (appInfoDic["currentVersionReleaseDate"] as? String) ?? ""
         self.releaseDate = String(releaseDate.prefix(10))
         
@@ -55,6 +51,26 @@ class AppInfo: Codable {
         let price = (appInfoDic["price"] as? Double) ?? 0.00
         self.isUpdatePrice = (self.price > 0 && self.price != price)
         self.price = price
+        
+        let version = (appInfoDic["version"] as? String) ?? ""
+        self.version = version
+
+        // 有更新：缓存版本和最新版本不一致。或者更新时间在最近1天。
+        self.isUpdated = (self.version.count > 0 && self.version != version)
+        if !self.isUpdated {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            if let targetDate = dateFormatter.date(from: self.releaseDate) {
+                let currentDate = Date()
+                let calendar = Calendar.current
+                let components = calendar.dateComponents([.hour], from: targetDate, to: currentDate)
+                if let dayDifference = components.hour {
+                    self.isUpdated = abs(dayDifference) <= 48
+                }
+            } else {
+                self.releaseDate = String(format: "Error date:%@", self.releaseDate)
+            }
+        }
     }
     
     /// 初始化
