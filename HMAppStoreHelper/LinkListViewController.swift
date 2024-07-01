@@ -27,9 +27,9 @@ class LinkListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(title: "Refresh", style: .plain, target: self, action: #selector(requestAllAppInfo))
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: "Edit", style: .plain, target: self, action: #selector(clickEditBtn))
         self.addTableView()
-        
         self.requestAllAppInfo()
         self.addNotification()
     }
@@ -94,6 +94,7 @@ extension LinkListViewController {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem.init(title: self.tableView.isEditing ? "Done" : "Edit", style: .plain, target: self, action: #selector(clickEditBtn))
     }
     
+    // 请求更新数据并刷新列表
     @objc private func requestAllAppInfo() {
         for (i, appInfo) in self.appModels.enumerated() {
             
