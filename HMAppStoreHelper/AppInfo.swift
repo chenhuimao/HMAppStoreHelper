@@ -53,10 +53,10 @@ class AppInfo: Codable {
         self.price = price
         
         let version = (appInfoDic["version"] as? String) ?? ""
-        self.version = version
-
         // 有更新：缓存版本和最新版本不一致。或者更新时间在最近1天。
         self.isUpdated = (self.version.count > 0 && self.version != version)
+        self.version = version
+
         if !self.isUpdated {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
