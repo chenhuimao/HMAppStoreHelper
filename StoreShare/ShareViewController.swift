@@ -55,7 +55,8 @@ class ShareViewController: SLComposeServiceViewController {
         var responder: UIResponder? = self
         while responder != nil {
             if let application = responder as? UIApplication {
-                application.open(url)
+                application.open(url, options: [:], completionHandler: nil)
+                break;
             }
             responder = responder?.next
         }

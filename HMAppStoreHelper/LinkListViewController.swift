@@ -65,7 +65,7 @@ class LinkListViewController: UIViewController {
                 return
             }
             
-            self.requestAppInfoWith(ID: ID, success: { [weak self] (appInfoDic) in
+            self.requestAppInfoWith(ID: ID, isCN: true, success: { [weak self] (appInfoDic) in
                 guard let `self` = self else {
                     return
                 }
@@ -98,7 +98,7 @@ extension LinkListViewController {
     @objc private func requestAllAppInfo() {
         for (i, appInfo) in self.appModels.enumerated() {
             
-            self.requestAppInfoWith(ID: appInfo.ID) { [weak self] (appInfoDic) in
+            self.requestAppInfoWith(ID: appInfo.ID, isCN: true) { [weak self] (appInfoDic) in
                 
                 guard let `self` = self else {
                     return
@@ -117,8 +117,10 @@ extension LinkListViewController {
         
     }
     
-    private func requestAppInfoWith(ID: String, success: @escaping (_ appInfoDic: [String: Any]) -> Void) {
-        guard let url = URL.init(string: "https://itunes.apple.com/cn/lookup?id=" + ID) else {
+    /// 优先请求国区信息，失败则使用美区
+    private func requestAppInfoWith(ID: String, isCN: Bool, success: @escaping (_ appInfoDic: [String: Any]) -> Void) {
+        let urlString = isCN ? ("https://itunes.apple.com/cn/lookup?id=" + ID) : ("https://itunes.apple.com/lookup?id=" + ID)
+        guard let url = URL.init(string: urlString) else {
             return
         }
         
@@ -127,21 +129,38 @@ extension LinkListViewController {
         URLSession.shared.dataTask(with: request) { (data, _, err) in
             if let error = err {
                 print(error.localizedDescription)
+                if (isCN) {
+                    self.requestAppInfoWith(ID: ID, isCN: false, success: success)
+                }
                 return
             }
             
             guard let data = data else {
+                if (isCN) {
+                    self.requestAppInfoWith(ID: ID, isCN: false, success: success)
+                }
                 return
             }
             
             guard let jsonObject = try? JSONSerialization.jsonObject(with: data), let jsonDic = jsonObject as? [String: Any] else {
+                if (isCN) {
+                    self.requestAppInfoWith(ID: ID, isCN: false, success: success)
+                }
                 return
             }
             
             guard let appInfoDic = (jsonDic["results"] as? [[String: Any]])?.first else {
+                if (isCN) {
+                    self.requestAppInfoWith(ID: ID, isCN: false, success: success)
+                } else {
+                    print("App(id\(ID))已下架")
+                }
                 return
             }
             
+            if (!isCN) {
+                print("美区App(id\(ID))")
+            }
             success(appInfoDic)
             
         }.resume()
@@ -199,7 +218,7 @@ extension LinkListViewController: UITableViewDelegate {
             return
         }
         
-        print("App Name:\(appModel.name), App id:\(appModel.ID).")
+        print("App Name:\(appModel.name), App id:\(appModel.ID)")
         //  跳转
         UIApplication.shared.open(itunesURL, options: [:], completionHandler: nil)
         
