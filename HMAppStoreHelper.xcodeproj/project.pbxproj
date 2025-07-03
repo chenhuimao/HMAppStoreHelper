@@ -10,7 +10,6 @@
 		2310D89E22BDFC7B00B71557 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2310D89D22BDFC7B00B71557 /* ShareViewController.swift */; };
 		2310D8A122BDFC7B00B71557 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2310D89F22BDFC7B00B71557 /* MainInterface.storyboard */; };
 		2310D8A522BDFC7B00B71557 /* StoreShare.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2310D89B22BDFC7B00B71557 /* StoreShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		2368793A24EE6C82000D1BF5 /* UIApplication+OpenURL.m in Sources */ = {isa = PBXBuildFile; fileRef = 2368793924EE6C82000D1BF5 /* UIApplication+OpenURL.m */; };
 		2392B830228AA5D900572E5E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2392B82F228AA5D900572E5E /* AppDelegate.swift */; };
 		2392B835228AA5D900572E5E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2392B833228AA5D900572E5E /* Main.storyboard */; };
 		2392B837228AA5DA00572E5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2392B836228AA5DA00572E5E /* Assets.xcassets */; };
@@ -53,9 +52,6 @@
 		2310D89D22BDFC7B00B71557 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		2310D8A022BDFC7B00B71557 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		2310D8A222BDFC7B00B71557 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2368793424EE64D3000D1BF5 /* StoreShare-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "StoreShare-Bridging-Header.h"; sourceTree = "<group>"; };
-		2368793824EE6C82000D1BF5 /* UIApplication+OpenURL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIApplication+OpenURL.h"; sourceTree = "<group>"; };
-		2368793924EE6C82000D1BF5 /* UIApplication+OpenURL.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIApplication+OpenURL.m"; sourceTree = "<group>"; };
 		2392B82C228AA5D900572E5E /* HMAppStoreHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HMAppStoreHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2392B82F228AA5D900572E5E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2392B834228AA5D900572E5E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -104,9 +100,6 @@
 			isa = PBXGroup;
 			children = (
 				2310D89D22BDFC7B00B71557 /* ShareViewController.swift */,
-				2368793824EE6C82000D1BF5 /* UIApplication+OpenURL.h */,
-				2368793924EE6C82000D1BF5 /* UIApplication+OpenURL.m */,
-				2368793424EE64D3000D1BF5 /* StoreShare-Bridging-Header.h */,
 				2310D89F22BDFC7B00B71557 /* MainInterface.storyboard */,
 				2310D8A222BDFC7B00B71557 /* Info.plist */,
 			);
@@ -330,7 +323,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2310D89E22BDFC7B00B71557 /* ShareViewController.swift in Sources */,
-				2368793A24EE6C82000D1BF5 /* UIApplication+OpenURL.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,7 +395,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = iOSWildcardProfile;
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = HMWildcardProfile;
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "StoreShare/StoreShare-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -428,7 +420,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "StoreShare/StoreShare-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
