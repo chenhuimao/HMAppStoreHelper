@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 extension NSNotification.Name {
     static let obtainNewAppID = NSNotification.Name.init("obtainNewAppID")
@@ -153,7 +154,13 @@ extension LinkListViewController {
                 if (isCN) {
                     self.requestAppInfoWith(ID: ID, isCN: false, success: success)
                 } else {
-                    print("App(id\(ID))已下架")
+                    let isExistTuple = AppInfo.isExist(ID: ID, models: self.appModels)
+                    if isExistTuple.isExist {
+                        let appInfo = self.appModels[isExistTuple.index]
+                        self.show(status: "\(appInfo.name)已下架")
+                    } else {
+                        self.show(status: "App(id\(ID))已下架")
+                    }
                 }
                 return
             }
@@ -239,5 +246,17 @@ extension LinkListViewController {
 
     @objc private func saveAppInfoModel() {
         AppInfo.save(models: self.appModels)
+    }
+    
+    private func show(status: String) {
+        if (Thread.isMainThread) {
+            SVProgressHUD.showInfo(withStatus: status)
+            SVProgressHUD.dismiss(withDelay: 5)
+        } else {
+            DispatchQueue.main.async {
+                SVProgressHUD.showInfo(withStatus: status)
+                SVProgressHUD.dismiss(withDelay: 5)
+            }
+        }
     }
 }

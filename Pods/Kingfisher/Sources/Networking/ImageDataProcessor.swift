@@ -30,7 +30,7 @@ private let sharedProcessingQueue: CallbackQueue =
     .dispatch(DispatchQueue(label: "com.onevcat.Kingfisher.ImageDownloader.Process"))
 
 // Handles image processing work on an own process queue.
-class ImageDataProcessor {
+final class ImageDataProcessor: Sendable {
     let data: Data
     let callbacks: [SessionDataTask.TaskCallback]
     let queue: CallbackQueue
@@ -46,7 +46,9 @@ class ImageDataProcessor {
     }
 
     func process() {
-        queue.execute(doProcess)
+        queue.execute {
+            self.doProcess()
+        }
     }
 
     private func doProcess() {
@@ -61,13 +63,7 @@ class ImageDataProcessor {
 
             let result: Result<KFCrossPlatformImage, KingfisherError>
             if let image = image {
-                var finalImage = image
-                if let imageModifier = callback.options.imageModifier {
-                    finalImage = imageModifier.modify(image)
-                }
-                if callback.options.backgroundDecode {
-                    finalImage = finalImage.kf.decoded
-                }
+                let finalImage = callback.options.backgroundDecode ? image.kf.decoded : image
                 result = .success(finalImage)
             } else {
                 let error = KingfisherError.processorError(
