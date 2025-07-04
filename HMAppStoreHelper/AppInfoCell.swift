@@ -35,7 +35,7 @@ extension AppInfoCell {
         self.dateLab.text = appInfo.releaseDate
         self.ratingLab.text = String.init(format: "⭐️%.1lf(%zd)", appInfo.averageRating, appInfo.userRatingCount)
         
-        self.priceLab.text = String.init(format: "¥%.2lf", appInfo.price)
+        self.priceLab.text = appInfo.formattedPrice
         self.priceLab.isHidden = appInfo.price <= 0
         
         if appInfo.isUpdated {

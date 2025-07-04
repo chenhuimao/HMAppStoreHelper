@@ -26,6 +26,8 @@ class AppInfo: Codable {
     var userRatingCount = 0
     /// 价格
     var price = 0.00
+    /// 显示的价格
+    var formattedPrice = ""
     
     /// 是否更新了版本
     var isUpdated = false
@@ -51,6 +53,7 @@ class AppInfo: Codable {
         let price = (appInfoDic["price"] as? Double) ?? 0.00
         self.isUpdatePrice = (self.price > 0 && self.price != price)
         self.price = price
+        self.formattedPrice = (appInfoDic["formattedPrice"] as? String) ?? ""
         
         let version = (appInfoDic["version"] as? String) ?? ""
         // 有更新：缓存版本和最新版本不一致。或者更新时间在最近1天。
