@@ -7,18 +7,12 @@
 //
 
 import UIKit
-import Social
-import MobileCoreServices
+import UniformTypeIdentifiers
 
-class ShareViewController: SLComposeServiceViewController {
+class ShareViewController: UIViewController {
 
-    override func isContentValid() -> Bool {
-        // Do validation of contentText and/or NSExtensionContext attachments here
-        return true
-    }
-
-    override func didSelectPost() {
-        // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
         guard let extensionItems = self.extensionContext?.inputItems as? [NSExtensionItem] else {
             return
@@ -29,23 +23,18 @@ class ShareViewController: SLComposeServiceViewController {
                 continue
             }
 
-            let typeIdentifier = kUTTypeURL as String
+            let typeIdentifier = UTType.url.identifier
             for provider in itemProviders where provider.hasItemConformingToTypeIdentifier(typeIdentifier) {
                 provider.loadItem(forTypeIdentifier: typeIdentifier, options: nil) { (url, error) in
                     if let url = url as? URL, let URLScheme = self.getURLSchemeByLink(url) {
                         self.openURL(URLScheme)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+                        }
                     }
                 }
             }
         }
-        
-        // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
-        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
-    }
-
-    override func configurationItems() -> [Any]! {
-        // To add configuration options via table cells at the bottom of the sheet, return an array of SLComposeSheetConfigurationItem here.
-        return []
     }
     
     //
