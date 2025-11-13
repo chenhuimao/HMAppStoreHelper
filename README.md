@@ -3,6 +3,6 @@
 ![screenshot](./Media/screenshot.png)
 
 
-新增App的方法：App Store找到一个App详情页，点击分享 - 找到`Store Helper` - 点击并发布。
+新增App的方法：App Store找到一个App详情页，点击分享 - 选择`Store Helper` 。
 
 ![append_app](./Media/append_app.gif)
